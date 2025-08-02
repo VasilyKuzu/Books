@@ -1,0 +1,6 @@
+@LearningController2_HostAddress = http://localhost:5082
+
+GET {{LearningController2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
