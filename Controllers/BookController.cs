@@ -47,5 +47,21 @@ namespace LearningController2.Controllers
                 return Ok(result);
             }
         }
+        [HttpPut("{id}")]
+        public ActionResult<Book> Update(int id, Book updatedBook)
+        {
+            var result = _book.FirstOrDefault(p => p.Id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                result.Title = updatedBook.Title;
+                result.Author = updatedBook.Author;
+
+                return Ok(result);
+            }
+        }
     }
 }
