@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LearningController2.Model
+namespace Books.Model
 {
     public class Book
     {

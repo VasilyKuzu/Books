@@ -1,67 +1,74 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LearningController2.Model;
+using Microsoft.EntityFrameworkCore;
+using Books.Model;
+using Books.Data;
 
-namespace LearningController2.Controllers
+namespace Books.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class BookController : Controller
     {
-        private static List<Book> _book = new List<Book>();
+        private readonly AppDbContext _context;
+
+        public BookController(AppDbContext context)
+        {
+            _context = context;
+        }
+
 
         [HttpGet]
-        public ActionResult<List<Book>> GetAll()
+        public async Task<ActionResult<List<Book>>> GetAll()
         {
-            return Ok(_book);
+            var books = await _context.Books.ToListAsync();
+            return Ok(books);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Book> GetById(int id)
+        public async Task<ActionResult<Book>> GetById(int id)
         {
-            var result = _book.FirstOrDefault(p => p.Id == id);
-            if (result == null)
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
             {
                 return NotFound();
             }
-            else return Ok(result);
+            else return Ok(book);
         }
 
         [HttpPost]
-        public ActionResult<Book> Create(Book book)
+        public async Task<ActionResult<Book>> Create(Book book)
         {
-            _book.Add(book);
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Book> Delete(int id)
+        public async Task<ActionResult<Book>> Delete(int id)
         {
-            var result = _book.FirstOrDefault(p => p.Id == id);
-            if (result == null)
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
             {
                 return NotFound();
             }
             else
             {
-                _book.Remove(result);
-                return Ok(result);
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                return Ok(book);
             }
         }
         [HttpPut("{id}")]
-        public ActionResult<Book> Update(int id, Book updatedBook)
+        public async Task<ActionResult<Book>> Update(int id, Book updatedBook)
         {
-            var result = _book.FirstOrDefault(p => p.Id == id);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                result.Title = updatedBook.Title;
-                result.Author = updatedBook.Author;
+            var book = await _context.Books.FindAsync(id);
+            if (book == null) return NotFound();
 
-                return Ok(result);
-            }
+            book.Title = updatedBook.Title;
+            book.Author = updatedBook.Author;
+
+            await _context.SaveChangesAsync();
+            return Ok(book);
         }
     }
 }

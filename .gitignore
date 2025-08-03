@@ -8,3 +8,4 @@ obj/
 *.sqlite
 *.db
 .env
+appsettings.Development.json
