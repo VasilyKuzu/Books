@@ -35,6 +35,13 @@ namespace Books.Controllers
             else return Ok(book);
         }
 
+        [HttpGet("after/{year}")]
+        public async Task<ActionResult<List<Book>>> GetAllAfterYear(int year)
+        {
+            var books = await _context.Books.Where(b => b.Year > year).ToListAsync();
+            return Ok(books);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Book>> Create(Book book)
         {
@@ -66,6 +73,8 @@ namespace Books.Controllers
 
             book.Title = updatedBook.Title;
             book.Author = updatedBook.Author;
+            book.Year = updatedBook.Year;
+
 
             await _context.SaveChangesAsync();
             return Ok(book);

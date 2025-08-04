@@ -9,6 +9,8 @@ namespace Books.Model
         public string Title { get; set; }
         [Required]
         public string Author { get; set; }
+        [Required]
+        public int Year { get; set; }
 
     }
 }
